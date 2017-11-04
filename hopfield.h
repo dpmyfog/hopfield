@@ -2,22 +2,24 @@
 #define HOPFIELD_H
 
 #include <iostream>
-#include <math>
+#include <cmath>
 #include <string>
 #include <vector>
 #include <utility>
 
-
+using namespace std;
 
 
 class Hopfield{
-	public:
-		vector<vector<float>> weights;
-		vector<int> state;
-		vector<float> bias;
-		int size;	
-
-		Hopfield(int size);
-
+ public:
+  vector<vector<float>> weights;
+  vector<int> state;
+  vector<float> bias;
+  int size;	
+  
+  Hopfield(int size);
+  void printConfiguration();
+  
+  
 };
 #endif
