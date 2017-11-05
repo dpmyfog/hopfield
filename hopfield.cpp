@@ -1,5 +1,8 @@
 #include <random>
+#include <fstream>
+
 #include "hopfield.h"
+
 
 
 using namespace std;
@@ -40,6 +43,44 @@ Hopfield::Hopfield(int size){
   }
 }
 
+float Hopfield::getStim(int neuron){
+  int row = neuron;
+  float totalWeight = 0.0f;
+  for(int col = 0; col < size; col++){
+    if(row != col){
+      totalWeight += weights[row][col] * state[col];
+    }
+  }
+  return totalWeight;
+}
+
+float Hopfield::getEnergy(){
+  float weightsEnergy = 0;
+  float biasEnergy = 0;
+  for(int row = 0; row < size; row++){
+    biasEnergy += bias[row]*state[row];
+    for(int col = 0; col < size; col++){
+      weightsEnergy += weights[row][col]*state[row]*state[col];
+    }
+  }
+  return -.5*weightsEnergy + biasEnergy;
+}
+
+void Hopfield::update(int steps){
+  for(int i = 0; i < steps; i++){
+    int randNeuron = rand()%size;
+    cout << "attempt to flip neuron #"  << randNeuron << endl;
+    float stim = getStim(randNeuron);
+    if(stim > bias[randNeuron]){
+      state[randNeuron] = 1;
+    }
+    
+    else{
+      state[randNeuron] = -1;
+    }
+  }
+}
+
 void Hopfield::printConfiguration(){
   cout << "WEIGHTS============================" << endl;
   for(int row = 0; row < size; row++){
@@ -55,4 +96,14 @@ void Hopfield::printConfiguration(){
 
   for(auto e: bias) cout << e << " ";
   cout << endl;
+}
+
+void Hopfield::writeArrToFile(string filename, vector<float> myvec){
+  ofstream myfile;
+  myfile.open(filename);
+  for(int i = 0; i < myvec.size(); i++){
+    myfile << myvec[i] << endl;
+  }
+  myfile.close();
+  
 }

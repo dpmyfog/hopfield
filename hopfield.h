@@ -18,7 +18,15 @@ class Hopfield{
   int size;	
   
   Hopfield(int size);
+
+  float getStim(int neuron);
+  float getEnergy();
+  void update(int steps);
+  void trainWeights(string bitstring);
+
+  
   void printConfiguration();
+  static void writeArrToFile(string filename, vector<float> myvec);
   
   
 };

@@ -4,7 +4,14 @@
 using namespace std;
 
 int main(){
-  cout << "hello world" << endl;
-  Hopfield ex(5);
-  ex.printConfiguration();
+  Hopfield ex(100);
+  vector<float> energies;
+  for(int i = 0; i < 100; i++){
+    
+    ex.update(1);
+    energies.push_back(ex.getEnergy());
+    
+  }
+
+  Hopfield::writeArrToFile("data/energies_1", energies);
 }
