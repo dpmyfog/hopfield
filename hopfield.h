@@ -22,8 +22,11 @@ class Hopfield{
   float getStim(int neuron);
   float getEnergy();
   void update(int steps);
-  void trainWeights(string bitstring);
+  void trainWeights(vector<string> bitstrings);
+  void setState(string state);
+  void corrupt(int numstates);
 
+  void randomize();
   
   void printConfiguration();
   static void writeArrToFile(string filename, vector<float> myvec);

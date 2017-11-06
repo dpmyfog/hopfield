@@ -3,7 +3,7 @@ import pylab
 
 def PrintImageNumber(a):
     for i in numpy.ndarray.flatten(a):
-        print(i,end='')
+        print(i)
     print()
 
 def MakeFace():
@@ -40,17 +40,29 @@ def MakeTree():
 
 
 face=MakeFace()
-print("This is the binary representation of the face")
-PrintImageNumber(face)
+#print("This is the binary representation of the face")
+#PrintImageNumber(face)
 pylab.matshow(face)
 pylab.title("I was supposed to be a \n happy face but I got the curvature wrong")
-pylab.show()
+#pylab.show()
 
 tree=MakeTree()
-print("This is the binary representation of the tree")
-PrintImageNumber(tree)
+#print("This is the binary representation of the tree")
+#PrintImageNumber(tree)
 pylab.matshow(tree)
 pylab.title("I am the best artistic rendition \n of a tree that Bryan could handle.")
-pylab.show()
+#pylab.show()
+
+faceWeight = numpy.outer(numpy.ndarray.flatten(face).transpose(), numpy.ndarray.flatten(face))
+
+treeWeight = numpy.outer(numpy.ndarray.flatten(tree).transpose(), numpy.ndarray.flatten(tree))
+
+treeface = faceWeight + treeWeight
+print(treeface)
+treeface = treeface/2.0
 
 
+numpy.savetxt('training/face', faceWeight, fmt = '%f')
+numpy.savetxt('training/tree', treeWeight, fmt = '%f')
+
+numpy.savetxt('training/treeface', treeface, fmt = '%f')

@@ -12,7 +12,6 @@ Hopfield::Hopfield(int size){
   state.resize(size);
   bias.resize(size);
   this->size = size;
-  srand(time(NULL));
   for(int row = 0; row < size; row++){
     double randProb = (double)  rand()/RAND_MAX;
     if(randProb < 0.5)	state[row] = 1;
@@ -69,19 +68,62 @@ float Hopfield::getEnergy(){
 void Hopfield::update(int steps){
   for(int i = 0; i < steps; i++){
     int randNeuron = rand()%size;
-    cout << "attempt to flip neuron #"  << randNeuron << endl;
+    //cout << "attempt to flip neuron #"  << randNeuron << endl;
     float stim = getStim(randNeuron);
     if(stim > bias[randNeuron]){
       state[randNeuron] = 1;
     }
     
-    else{
+    else if (stim < bias[randNeuron]){
       state[randNeuron] = -1;
+    }
+
+    cout << getEnergy() << endl;
+  }
+}
+
+/**
+ * WE ASSUME THAT THE WEIGHTS MATRIX IS ALREADY CORRECTLY SIZED
+ */
+void Hopfield::trainWeights(vector<string> bitstrings){
+  float size = bitstrings.size();
+  for(string str : bitstrings){
+    for(int row = 0; row < str.length(); row++){
+      if(str[row] == '0'){
+        for(int col = 0; col < str.length(); col++){
+	  weights[row][col] = -1*(str[col] - '0');
+	}
+      }
+      else{
+	for(int col = 0; col < str.length(); col++){
+	  int weightVal = str[col] - '0';
+	  weights[row][col] = (float)weightVal/size;
+	  if(col == row) weights[row][col] = 0;
+	}
+      }
     }
   }
 }
 
+void Hopfield::setState(string instate){
+  for(int i = 0; i < instate.length(); i++){
+    state[i]*=-1;
+  }
+}
+
+void Hopfield::corrupt(int numstates){
+  for(int i = 0; i < numstates; i++){
+    int randInt = rand()%2;
+    if(randInt == 1) state[i]*=1;
+  }
+}
+
+void Hopfield::randomize(){
+  
+}
+
 void Hopfield::printConfiguration(){
+  /*
   cout << "WEIGHTS============================" << endl;
   for(int row = 0; row < size; row++){
     for(int col = 0; col < size; col++){
@@ -89,13 +131,13 @@ void Hopfield::printConfiguration(){
     }
     cout << endl;
   }
-  
+  */
   cout << "STATE==============================" << endl;
   for(auto e: state) cout << e << " ";
   cout << endl;
 
-  for(auto e: bias) cout << e << " ";
-  cout << endl;
+  //for(auto e: bias) cout << e << " ";
+  //cout << endl;
 }
 
 void Hopfield::writeArrToFile(string filename, vector<float> myvec){
