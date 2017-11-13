@@ -78,7 +78,7 @@ void Hopfield::update(int steps){
       state[randNeuron] = -1;
     }
 
-    cout << getEnergy() << endl;
+    //cout << getEnergy() << endl;
   }
 }
 
@@ -106,16 +106,47 @@ void Hopfield::trainWeights(vector<string> bitstrings){
 }
 
 void Hopfield::setState(string instate){
-  for(int i = 0; i < instate.length(); i++){
-    state[i]*=-1;
+  for(int i = 0; i < instate.size(); i++){
+    if(instate[i] = '1') state[i] = 1;
+    else state[i] = -1;
+  }
+}
+
+void Hopfield::setState(vector<int> & instate){
+  for(int i = 0; i < state.size(); i++){
+    state[i] = instate[i];
   }
 }
 
 void Hopfield::corrupt(int numstates){
   for(int i = 0; i < numstates; i++){
     int randInt = rand()%2;
-    if(randInt == 1) state[i]*=1;
+    if(randInt == 1) state[i]*=-1;
   }
+}
+
+void Hopfield::corruptRandom(int numstates){
+  vector<int> remaining;
+  remaining.resize(state.size(), 0);
+  for(int i = 0; i < state.size(); i++){
+    remaining[i] = i;
+  }
+
+  for(int i = 0; i < numstates; i++){
+    int randIdx = rand()%remaining.size();
+    //cout << "flipping the neuron in: " <<  remaining[randIdx] << endl;
+    state[remaining[randIdx]] *= -1;
+    remaining.erase(remaining.begin() + randIdx);    
+  }
+  
+}
+
+float Hopfield::hamming(vector<int> otherState){
+  int dist = 0;
+  for(int i = 0; i < state.size(); i++){
+    if(state[i] != otherState[i]) dist++;
+  }
+  return dist;
 }
 
 void Hopfield::randomize(){
@@ -148,4 +179,13 @@ void Hopfield::writeArrToFile(string filename, vector<float> myvec){
   }
   myfile.close();
   
+}
+
+vector<int> Hopfield::toStateVector(string strstate){
+  vector<int> ret;
+  for(int idx = 0; idx < strstate.length(); idx++){
+    if(strstate[idx] == '0') ret.push_back(-1);
+    else ret.push_back(1);
+  }
+  return ret;
 }

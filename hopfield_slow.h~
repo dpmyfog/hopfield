@@ -24,16 +24,13 @@ class Hopfield{
   void update(int steps);
   void trainWeights(vector<string> bitstrings);
   void setState(string state);
-  void setState(vector<int> & instate);
   void corrupt(int numstates);
-  void corruptRandom(int numstates);
 
   void randomize();
-  float hamming(vector<int> otherState);
   
   void printConfiguration();
   static void writeArrToFile(string filename, vector<float> myvec);
-  static vector<int> toStateVector(string stringVec);
+  
   
 };
 #endif

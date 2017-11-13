@@ -1,5 +1,5 @@
-#ifndef HOPFIELD_H
-#define HOPFIELD_H
+#ifndef HOPFIELD_SLOW_H
+#define HOPFIELD_SLOW_H
 
 #include <iostream>
 #include <cmath>
@@ -10,30 +10,28 @@
 using namespace std;
 
 
-class Hopfield{
+class Hopfield_Slow{
  public:
   vector<vector<float>> weights;
   vector<int> state;
   vector<float> bias;
-  int size;	
+  int size;
+  int numMemories;
   
-  Hopfield(int size);
+  Hopfield_Slow(int numMemories,int size);
 
   float getStim(int neuron);
   float getEnergy();
   void update(int steps);
   void trainWeights(vector<string> bitstrings);
   void setState(string state);
-  void setState(vector<int> & instate);
   void corrupt(int numstates);
-  void corruptRandom(int numstates);
 
   void randomize();
-  float hamming(vector<int> otherState);
   
   void printConfiguration();
   static void writeArrToFile(string filename, vector<float> myvec);
-  static vector<int> toStateVector(string stringVec);
+  
   
 };
 #endif
