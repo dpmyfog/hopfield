@@ -19,9 +19,11 @@ class Hopfield{
   
   Hopfield(int size);
 
+  bool isConverged();
   float getStim(int neuron);
   float getEnergy();
   void update(int steps);
+  void update();
   void trainWeights(vector<string> bitstrings);
   void setState(string state);
   void setState(vector<int> & instate);
@@ -32,7 +34,9 @@ class Hopfield{
   float hamming(vector<int> otherState);
   
   void printConfiguration();
+  void printState();
   static void writeArrToFile(string filename, vector<float> myvec);
+  static void writeArrToFile(string filename, vector<vector<float>> myvec);
   static vector<int> toStateVector(string stringVec);
   
 };

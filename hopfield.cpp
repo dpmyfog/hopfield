@@ -42,6 +42,17 @@ Hopfield::Hopfield(int size){
   }
 }
 
+bool Hopfield::isConverged(){
+  for(int i = 0; i < size; i++){
+    int currState = state[i];
+    int newState = 0;
+    if(getStim(i) > bias[i]) newState = 1;
+    else newState = -1;
+    if(newState != currState) return false;
+  }
+  return true;
+}
+
 float Hopfield::getStim(int neuron){
   int row = neuron;
   float totalWeight = 0.0f;
@@ -82,26 +93,62 @@ void Hopfield::update(int steps){
   }
 }
 
+//updates until converged
+void Hopfield::update(){
+  while(!isConverged()){
+    
+    int randNeuron = rand()%size;
+    //cout << "updating neuron #"  << randNeuron << endl;
+    float stim = getStim(randNeuron);
+    if(stim > bias[randNeuron]){
+      state[randNeuron] = 1;
+    }
+    
+    else if (stim < bias[randNeuron]){
+      state[randNeuron] = -1;
+    }
+    //cout << "Energy: " << getEnergy() << endl;
+  }  
+}
+
 /**
  * WE ASSUME THAT THE WEIGHTS MATRIX IS ALREADY CORRECTLY SIZED
  */
 void Hopfield::trainWeights(vector<string> bitstrings){
   float size = bitstrings.size();
+  
+  for(int row = 0; row < weights.size(); row++){
+    for(int col = 0; col < weights.size(); col++){
+      weights[row][col] = 0;
+    }
+  }
+  
   for(string str : bitstrings){
     for(int row = 0; row < str.length(); row++){
-      if(str[row] == '0'){
-        for(int col = 0; col < str.length(); col++){
-	  weights[row][col] = -1*(str[col] - '0');
+      //read the column vector's bit
+      //if 1, then copy it over straight up
+      //else copy it over but negated
+
+      if(str[row] == '1'){
+	//copy straight over, divide by size
+	for(int col = 0; col < str.length(); col++){
+	  if(str[col] == '1') weights[row][col] += (float) 1.0f/size;
+	  if(str[col] == '0') weights[row][col] += (float) -1.0f/size;
 	}
       }
+
       else{
+	//copy negated, divide by size
 	for(int col = 0; col < str.length(); col++){
-	  int weightVal = str[col] - '0';
-	  weights[row][col] = (float)weightVal/size;
-	  if(col == row) weights[row][col] = 0;
+	  if(str[col] == '1') weights[row][col] += (float) -1.0f/size;
+	  if(str[col] == '0') weights[row][col] += (float) 1.0f/size;
 	}
       }
     }
+  }
+  
+  for(int row = 0; row < weights.size(); row++){
+    weights[row][row] = 0;
   }
 }
 
@@ -154,7 +201,7 @@ void Hopfield::randomize(){
 }
 
 void Hopfield::printConfiguration(){
-  /*
+  
   cout << "WEIGHTS============================" << endl;
   for(int row = 0; row < size; row++){
     for(int col = 0; col < size; col++){
@@ -162,13 +209,22 @@ void Hopfield::printConfiguration(){
     }
     cout << endl;
   }
-  */
+  
   cout << "STATE==============================" << endl;
   for(auto e: state) cout << e << " ";
   cout << endl;
 
   //for(auto e: bias) cout << e << " ";
   //cout << endl;
+}
+
+void Hopfield::printState(){
+  for(auto i:state){
+    cout << i;
+  }
+
+  cout << endl;
+
 }
 
 void Hopfield::writeArrToFile(string filename, vector<float> myvec){
@@ -179,6 +235,18 @@ void Hopfield::writeArrToFile(string filename, vector<float> myvec){
   }
   myfile.close();
   
+}
+
+void Hopfield::writeArrToFile(string filename, vector<vector<float>> myvec){
+  ofstream myfile;
+  myfile.open(filename);
+  for(int i = 0; i < myvec.size(); i++){
+    for(int j = 0; j < myvec[0].size(); j++){
+      myfile << myvec[i][j] << " ";
+    }
+    myfile << endl;
+  }
+  myfile.close();
 }
 
 vector<int> Hopfield::toStateVector(string strstate){
