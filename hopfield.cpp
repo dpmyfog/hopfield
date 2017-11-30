@@ -111,6 +111,21 @@ void Hopfield::update(){
   }  
 }
 
+string Hopfield::updateTgt(int neuron){
+  cout << getStateString() << endl;
+  cout << "updating the " << neuron << "th neuron" << endl;
+  float stim = getStim(neuron);
+  if(stim > bias[neuron]){
+    state[neuron] = 1;
+  }
+    
+  else if (stim < bias[neuron]){
+    state[neuron] = -1;
+  }
+  cout << getStateString() << endl << endl;
+  return getStateString();
+}
+
 /**
  * WE ASSUME THAT THE WEIGHTS MATRIX IS ALREADY CORRECTLY SIZED
  */
@@ -154,7 +169,9 @@ void Hopfield::trainWeights(vector<string> bitstrings){
 
 void Hopfield::setState(string instate){
   for(int i = 0; i < instate.size(); i++){
-    if(instate[i] = '1') state[i] = 1;
+    if(instate[i] == '1') {
+      state[i] = 1;
+    }
     else state[i] = -1;
   }
 }
@@ -227,6 +244,15 @@ void Hopfield::printState(){
 
 }
 
+string Hopfield::getStateString(){
+  string ret = "";
+  for(int i = 0; i < state.size(); i++){
+    if(state[i] == -1) ret+="0";
+    else ret+= "1";
+  }
+  return ret;
+}
+
 void Hopfield::writeArrToFile(string filename, vector<float> myvec){
   ofstream myfile;
   myfile.open(filename);
@@ -235,6 +261,15 @@ void Hopfield::writeArrToFile(string filename, vector<float> myvec){
   }
   myfile.close();
   
+}
+
+void Hopfield::writeArrToFile(string filename, vector<string> myvec){
+  ofstream myfile;
+  myfile.open(filename);
+  for(int i = 0; i < myvec.size(); i++){
+    myfile << myvec[i] << endl;
+  }
+  myfile.close();
 }
 
 void Hopfield::writeArrToFile(string filename, vector<vector<float>> myvec){

@@ -1,9 +1,23 @@
 #include <iostream>
 #include <bitset>
+#include <map>
+#include <utility>
 #include "hopfield.h"
 #include "hopfield_slow.h"
 
 using namespace std;
+
+int btoi(string bitstring){
+  int ret = 0;
+  for(int idx = 0; idx < bitstring.length(); idx++){
+    int power = bitstring.length()-idx - 1;
+    if(bitstring[idx] == '1'){
+      ret += pow(2.0, (double) power);
+    }
+  }
+  return ret;
+}
+
 
 void testDescent(){
   
@@ -74,7 +88,7 @@ vector<float> testMemory(int numMemories, int length){
   vector<float> out;
   vector<string> memories = genRandomMemories(numMemories, length);
   Hopfield ex(length);
-  ex.trainWeights(memories);
+  //ex.trainWeights(memories);
 
   //cout << "made past training" << endl;
   //ex.printConfiguration();
@@ -105,6 +119,48 @@ vector<float> testMemory(int numMemories, int length){
   
 }
 
+void energyLandscape(){
+  Hopfield ex(6);
+  string mem1 = "100101";
+  string mem2 = "011100";
+
+  vector<string> mems;
+  mems.push_back(mem1);
+  mems.push_back(mem2);
+
+  ex.trainWeights(mems);
+
+  vector<string> startingStates;
+  
+  for(int i = 0; i < 64; i++){
+    startingStates.push_back(bitset<6>(i).to_string());
+    //cout << bitset<6>(i).to_string() << endl;
+  }
+  map<string, vector<string>> myMap;
+  for(int i = 0; i < startingStates.size(); i++){
+    vector<string> toMap;
+    for(int neuron = 0; neuron < 6; neuron++){
+      cout << startingStates[i] << endl;
+      ex.setState(startingStates[i]);
+      toMap.push_back(ex.updateTgt(neuron));
+    }
+    myMap.insert(make_pair(startingStates[i], toMap));
+  }
+  vector<string> out;
+  out.push_back("strict digraph G{");
+  out.push_back(to_string(btoi(mem1)) + " [shape=circle, style=filled, fillcolor=red]");
+  out.push_back(to_string(btoi(mem2)) + " [shape=circle, style=filled, fillcolor=red]");
+  for(string s: startingStates){
+    for(int i = 0; i < 6; i++){
+      //cout << to_string(btoi(s)) +  " -> " + to_string(btoi(myMap[s][i])) + ";" << endl;
+      if(s != myMap[s][i]) out.push_back(to_string(btoi(s)) +  " -> " + to_string(btoi(myMap[s][i])) + ";") ;
+    }
+  }
+  out.push_back("}");
+
+  
+  Hopfield::writeArrToFile("landscape_graph", out);
+}
 
 
 
@@ -128,14 +184,17 @@ int main(){
   ex.printConfiguration();
   */
 
-
+  /*
   vector<vector<float>> distMtx;
   for(int i = 1; i <= 100; i++){
     distMtx.push_back(testMemory(i, 100));
   }
 
   Hopfield::writeArrToFile("data/hamming/hammingMtx", distMtx);
-  
+  */
+
+  energyLandscape();
+
   
   /*
   Hopfield ex(100);

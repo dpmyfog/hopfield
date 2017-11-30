@@ -24,6 +24,7 @@ class Hopfield{
   float getEnergy();
   void update(int steps);
   void update();
+  string updateTgt(int neuron);
   void trainWeights(vector<string> bitstrings);
   void setState(string state);
   void setState(vector<int> & instate);
@@ -35,7 +36,9 @@ class Hopfield{
   
   void printConfiguration();
   void printState();
+  string getStateString();
   static void writeArrToFile(string filename, vector<float> myvec);
+  static void writeArrToFile(string filename, vector<string> myvec);
   static void writeArrToFile(string filename, vector<vector<float>> myvec);
   static vector<int> toStateVector(string stringVec);
   
