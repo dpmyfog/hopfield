@@ -292,3 +292,12 @@ vector<int> Hopfield::toStateVector(string strstate){
   }
   return ret;
 }
+
+void Hopfield::writeArrToFile(string filename, vector<int> myvec){
+  ofstream myfile;
+  myfile.open(filename);
+  for(int i = 0; i < myvec.size(); i++){
+    myfile << myvec[i] << endl;
+  }
+  myfile.close();
+}

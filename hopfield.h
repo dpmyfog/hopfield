@@ -40,6 +40,7 @@ class Hopfield{
   static void writeArrToFile(string filename, vector<float> myvec);
   static void writeArrToFile(string filename, vector<string> myvec);
   static void writeArrToFile(string filename, vector<vector<float>> myvec);
+  static void writeArrToFile(string filename, vector<int> myvec);
   static vector<int> toStateVector(string stringVec);
   
 };

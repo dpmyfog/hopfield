@@ -37,26 +37,42 @@ void testDescent(){
   }
 }
 void train(){
-  //string faceString = "0000000000000100010000000000000000000000000010000000000000000001110000001000100001000001101000000001";
-  //string treeString = "0001111000000111100000001100000000110000001111111000001100100000110000000011000000001100000000110000";
-  string faceString = "00110110";
-  string treeString = "10101011";
+  string faceString = "0000000000000100010000000000000000000000000010000000000000000001110000001000100001000001101000000001";
+  string treeString = "0001111000000111100000001100000000110000001111111000001100100000110000000011000000001100000000110000";
+  //string faceString = "00110110";
+  //string treeString = "10101011";
   cout << faceString.length() << endl;
-  vector<string> stringarr;
-  Hopfield ex(treeString.length());
+  vector<string> faceArr;
+  Hopfield exFace(faceString.length());
   //Hopfield_Slow ex_slow(8, 2);
-  stringarr.push_back(faceString);
-  stringarr.push_back(treeString);
-  ex.trainWeights(stringarr);
+  faceArr.push_back(faceString);
+  exFace.trainWeights(faceArr);
+
+  Hopfield exTree(treeString.length());
+  vector<string> treeArr;
+  treeArr.push_back(treeString);
+  exTree.trainWeights(treeArr);
   
   // ex_slow.printConfiguration();
   
-  ex.corruptRandom(faceString.size()/2);
-  ex.printConfiguration();
-  cout << ex.getEnergy() << " NRG AFTER CORRUPTION" << endl;
-  ex.update();
-  cout << ex.getEnergy() << " NRG AFTER UPDATING" << endl;
-  ex.printConfiguration();
+  exFace.corrupt(faceString.size()/4);
+  Hopfield::writeArrToFile("data/corruptedFace", exFace.state);
+  //exFace.printConfiguration();
+  cout << exFace.getEnergy() << " NRG AFTER CORRUPTION" << endl;
+  exFace.update();
+  Hopfield::writeArrToFile("data/fixedFace", exFace.state);
+  cout << exFace.getEnergy() << " NRG AFTER UPDATING" << endl;
+  //exFace.printConfiguration();
+
+  exTree.corrupt(treeString.size()/4);
+  Hopfield::writeArrToFile("data/corruptedTree", exTree.state);
+  //exTree.printConfiguration();
+  cout << exTree.getEnergy() << " NRG AFTER CORRUPTION" << endl;
+  exTree.update();
+  Hopfield::writeArrToFile("data/fixedTree", exTree.state);
+  cout << exTree.getEnergy() << " NRG AFTER UPDATING" << endl;
+  //exTree.printConfiguration();
+ 
   
 }
 
@@ -162,7 +178,9 @@ void energyLandscape(){
   Hopfield::writeArrToFile("landscape_graph", out);
 }
 
-
+void testCorruption(){
+  
+}
 
 
 int main(){
@@ -193,7 +211,7 @@ int main(){
   Hopfield::writeArrToFile("data/hamming/hammingMtx", distMtx);
   */
 
-  energyLandscape();
+  train();
 
   
   /*

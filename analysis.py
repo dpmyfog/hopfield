@@ -26,6 +26,36 @@ def analyzeHamming():
     plt.show()
 
 
+def analyzePics():
+    corruptedFace = np.loadtxt('data/corruptedFace')
+    corruptedTree = np.loadtxt('data/corruptedTree')
 
-analyzeHamming()
+    corruptedFace = corruptedFace.reshape((10, 10))
+    corruptedTree = corruptedTree.reshape((10, 10))
+
+    fixedFace = np.loadtxt('data/fixedFace')
+    fixedTree = np.loadtxt('data/fixedTree')
+
+    fixedFace = fixedFace.reshape((10, 10))
+    fixedTree = fixedTree.reshape((10, 10))
+    
+    plt.matshow(corruptedFace)
+    plt.title('corrupted face')
+    plt.show()
+
+    plt.matshow(fixedFace)
+    plt.title('face after updating')
+    plt.show()
+
+    plt.matshow(corruptedTree)
+    plt.title('corrupted tree')
+    plt.show()
+
+    plt.matshow(fixedTree)
+    plt.title('tree after updating')
+    plt.show()
+
+    
+
+analyzePics()
     
